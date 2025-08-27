@@ -1,7 +1,7 @@
 FILEPATH = "todos.txt"
 
 def get_todos(filepath=FILEPATH):
-    """ Returns the list of todo items
+    """ Returns the list of todos
     from the text file.
     """
     with open(filepath, 'r') as file_local:
@@ -10,7 +10,7 @@ def get_todos(filepath=FILEPATH):
     return todos
 
 def write_todos(todos_args, filepath=FILEPATH):
-    """ Writes the list of todo items
+    """ Writes the list of todos
     to the text file.
     """
     with open(filepath, 'w') as file_local:
