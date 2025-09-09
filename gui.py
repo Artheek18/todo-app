@@ -88,6 +88,9 @@ while True:
                 window['todos'].update(values=[t.strip() for t in todos])
                 window['todos'].update(set_to_index=idx + 1)
 
+        case "Exit":
+            break
+
         case "todos":
             window['todo'].update(value=values['todos'][0])
 
