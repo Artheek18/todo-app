@@ -1,8 +1,21 @@
+import sys
 import time
-
+import os
 import functions
 import FreeSimpleGUI as fs
 
+
+def resource_path(relative_path):
+    """ Get absolute path to resource, works for dev and for PyInstaller """
+    try:
+        base_path = sys._MEIPASS  # PyInstaller stores temp folder here
+    except Exception:
+        base_path = os.path.abspath(".")  # when running normally
+
+    return os.path.join(base_path, relative_path)
+if not os.path.exists("todos.txt"):
+    with open("todos.txt", "w") as file:
+        pass
 
 fs.theme("Light Green")
 
@@ -16,14 +29,17 @@ input_box = fs.InputText(tooltip="Enter a to-do", key="todo")
 list_box = fs.Listbox(values=functions.get_todos(), key='todos',
                       enable_events=True, size=(40, 20))
 
+add_img = resource_path("images/add.png")
+complete_img = resource_path("images/complete.png")
 #Buttons
-add_button = fs.Button(size=3, image_source="images/add.png",
+add_button = fs.Button(size=3, image_source=add_img,
                        tooltip="Add To-Do", mouseover_colors="DarkGreen", key="Add To-Do")
+
 edit_button = fs.Button("Edit To-Do")
 move_up_button = fs.Button("Move Up")
 move_down_button = fs.Button("Move Down")
-complete_button = fs.Button(size=3, image_source="images/complete.png",
-                       tooltip="Complete", mouseover_colors="DarkGreen", key="Complete")
+complete_button = fs.Button(size=3, image_source=complete_img,
+                            tooltip="Complete", mouseover_colors="DarkGreen", key="Complete")
 exit_button = fs.Button("Exit")
 clear_button = fs.Button("Clear")
 
@@ -74,6 +90,11 @@ while True:
                 fs.popup("Please Select a To-Do", font=("Helvetica", 20), text_color="red")
 
         case "Complete":
+
+            if not values.get('todos'):
+                fs.popup("You have nothing to complete.", font=("Helvetica", 16))
+                continue
+
             complete_todo = values['todos'][0].strip()
             todos = [t.strip() for t in functions.get_todos()]
             todos.remove(complete_todo)
@@ -82,6 +103,10 @@ while True:
             window['todo'].update(value="")
 
         case "Move Up":
+            if not values.get('todos'):
+                fs.popup("You selected nothing to move up.", font=("Helvetica", 16))
+                continue
+
             todos = functions.get_todos()
             todo_moveUp = values['todos'][0].strip()
             idx = [t.strip() for t in todos].index(todo_moveUp)
@@ -92,6 +117,9 @@ while True:
                 window['todos'].update(set_to_index=idx - 1)
 
         case "Move Down":
+            if not values.get('todos'):
+                fs.popup("You selected nothing to move down.", font=("Helvetica", 16))
+                continue
             todos = functions.get_todos()
             todo_moveDown = values['todos'][0].strip()
             idx = [t.strip() for t in todos].index(todo_moveDown)
